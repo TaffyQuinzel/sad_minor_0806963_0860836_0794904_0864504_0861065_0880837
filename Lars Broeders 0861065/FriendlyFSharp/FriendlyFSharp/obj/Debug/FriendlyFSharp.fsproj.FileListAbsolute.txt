@@ -1,0 +1,8 @@
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.exe.config
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.XML
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.exe
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.pdb
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\bin\Debug\FSharp.Core.dll
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\bin\Debug\FSharp.Core.xml
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\obj\Debug\FriendlyFSharp.exe
+c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\obj\Debug\FriendlyFSharp.pdb
