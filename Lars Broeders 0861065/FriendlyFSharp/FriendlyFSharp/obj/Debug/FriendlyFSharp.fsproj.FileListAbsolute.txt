@@ -6,3 +6,11 @@ c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFShar
 c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\bin\Debug\FSharp.Core.xml
 c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\obj\Debug\FriendlyFSharp.exe
 c:\users\lars\documents\visual studio 2013\Projects\FriendlyFSharp\FriendlyFSharp\obj\Debug\FriendlyFSharp.pdb
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.exe.config
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.XML
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.exe
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\bin\Debug\FriendlyFSharp.pdb
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\bin\Debug\FSharp.Core.dll
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\bin\Debug\FSharp.Core.xml
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\obj\Debug\FriendlyFSharp.exe
+C:\Users\Lars\Documents\Projects\SAD\Lars Broeders 0861065\FriendlyFSharp\FriendlyFSharp\obj\Debug\FriendlyFSharp.pdb

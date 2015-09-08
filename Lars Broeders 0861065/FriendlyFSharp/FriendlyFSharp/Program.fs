@@ -3,6 +3,7 @@
 
 [<EntryPoint>]
 let main argv = 
-    do Chapter1.BallSimulation.simulation()
-    do Chapter2.RocketSimulation.simulation()
+    // do Chapter1.BallSimulation.simulation()
+    // do Chapter2.RocketSimulation.simulation()
+    do Chapter3.SmallAsteroidFieldSimulation.simulation()
     0 // return an integer exit code
