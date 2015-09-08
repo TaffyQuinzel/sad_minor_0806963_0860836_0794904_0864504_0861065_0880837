@@ -10,4 +10,5 @@ let main argv =
     // do Chapter4.LargeAsteroidFieldSimulation.slow_simulation_framerate()
     // do Chapter4.LargeAsteroidFieldSimulation.fast_simulation()
     // do Chapter4.LargeAsteroidFieldSimulation.fast_simulation_framerate()
+    do Chapter5.PoliceChase.simulation()
     0 // return an integer exit code

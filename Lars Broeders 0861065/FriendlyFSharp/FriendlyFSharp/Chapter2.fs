@@ -45,10 +45,17 @@
         v * (1.0 / f)
       member this.Length: float<'a> =
         sqrt((this.X * this.X + this.Y * this.Y))
+      member this.Normalized = 
+        this / this.Length
       static member Distance (v1: Vector2<'a>, v2: Vector2<'a>): float<'a> =
         (v1 - v2).Length
       static member Normalize(v: Vector2<'a>): Vector2<1> =
-        v / v.Length
+        v.Normalized
+      static member Dot (v1: Vector2<'a>, v2: Vector2<'b>): float<'a * 'b> =
+        v1.X * v2.X + v1.Y * v2.Y
+
+      
+      
 
   module RocketSimulation =
     open System
