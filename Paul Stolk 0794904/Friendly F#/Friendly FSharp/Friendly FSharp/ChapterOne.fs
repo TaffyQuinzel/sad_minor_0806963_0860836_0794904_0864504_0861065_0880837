@@ -3,7 +3,6 @@
   module BallSimulation =
     open System
     
-      
     let dt = 0.1
     let gravity = -9.81
 
