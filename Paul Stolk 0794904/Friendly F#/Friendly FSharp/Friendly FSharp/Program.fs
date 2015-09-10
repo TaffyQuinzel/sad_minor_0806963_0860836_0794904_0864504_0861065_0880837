@@ -4,5 +4,6 @@
 [<EntryPoint>]
 let main argv = 
  //   do ChapterOne.BallSimulation.simulation()
-    do ChapterTwo.RocketSimulation.simulation()
+    //do ChapterTwo.RocketSimulation.simulation()
+    do ChapterThree.SmallAsteroidFieldSimulation.simulation()
     0 // return an integer exit code
