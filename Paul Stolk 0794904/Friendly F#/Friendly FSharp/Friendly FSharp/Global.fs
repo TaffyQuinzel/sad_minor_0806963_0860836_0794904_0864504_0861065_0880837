@@ -52,3 +52,4 @@
         (v1 - v2).Length
       static member Normalize(v: Vector2<'a>): Vector2<1> =
         v.Normalized
+

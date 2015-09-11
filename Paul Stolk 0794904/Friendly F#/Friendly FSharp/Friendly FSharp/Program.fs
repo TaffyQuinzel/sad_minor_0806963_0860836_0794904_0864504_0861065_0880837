@@ -5,5 +5,9 @@
 let main argv = 
  //   do ChapterOne.BallSimulation.simulation()
     //do ChapterTwo.RocketSimulation.simulation()
-    do ChapterThree.SmallAsteroidFieldSimulation.simulation()
+    //do ChapterThree.SmallAsteroidFieldSimulation.simulation()
+    do ChapterFour.LargeAsteroidFieldSimulation.slow_simulation()
+    do ChapterFour.LargeAsteroidFieldSimulation.slow_simulation_framerate()
+    do ChapterFour.LargeAsteroidFieldSimulation.fast_simulation()
+    do ChapterFour.LargeAsteroidFieldSimulation.fast_simulation_framerate()
     0 // return an integer exit code
