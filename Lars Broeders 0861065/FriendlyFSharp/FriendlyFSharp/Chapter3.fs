@@ -62,24 +62,41 @@
       G * a.Mass * a'.Mass * dir / (dist * dist * dist)
 
     let simulation_step (asteroids: Asteroid list) =
-      [
-        for a in asteroids do
-          let forces =
-            [
-              for a' in asteroids do
-                if a' <> a then
-                  yield force (a, a')
-            ]
-          let F = List.sum forces
-          let p', v' = clamp(a.Position, a.Velocity)
-          yield
-            {
-              a with
-                Position = p' + dt * v'
-                Velocity = v' + dt * F / a.Mass
-            }
-      ]
-
+      let list = 
+        [
+          for a in asteroids do
+            let forces =
+              [
+                for a' in asteroids do
+                  if a' <> a then
+                    yield force (a, a')
+              ]
+            let F = List.sum forces
+            let p', v' = clamp(a.Position, a.Velocity)
+            yield
+              {
+                a with
+                  Position = p' + dt * v'
+                  Velocity = v' + dt * F / a.Mass
+              }
+        ]
+      if (Console.KeyAvailable) then
+        let ukey = Console.ReadKey(true)
+        match ukey.Key with
+        | ConsoleKey.D1 | ConsoleKey.NumPad1 -> list @ create_field 1
+        | ConsoleKey.D2 | ConsoleKey.NumPad2 -> list @ create_field 2
+        | ConsoleKey.D3 | ConsoleKey.NumPad3 -> list @ create_field 3
+        | ConsoleKey.D4 | ConsoleKey.NumPad4 -> list @ create_field 4
+        | ConsoleKey.D5 | ConsoleKey.NumPad1 -> list @ create_field 5
+        | ConsoleKey.D6 | ConsoleKey.NumPad6 -> list @ create_field 6 
+        | ConsoleKey.D7 | ConsoleKey.NumPad7 -> list @ create_field 7
+        | ConsoleKey.D8 | ConsoleKey.NumPad8 -> list @ create_field 8
+        | ConsoleKey.D9 | ConsoleKey.NumPad9 -> list @ create_field 9
+        | ConsoleKey.D0 | ConsoleKey.NumPad0 -> list @ create_field 10
+        | _ -> list
+      else 
+        list
+          
     let print_scene (asteroids: Asteroid list) =
       do Console.Clear()
       for i = 0 to 79 do
@@ -99,9 +116,11 @@
       for a in asteroids do
         do set_cursor_on_body a
         do Console.Write(a.Name)
+      Console.SetCursorPosition(0, 24)
+      Console.Write(asteroids.Length)
       do Thread.Sleep(100)
     
-    let f0 = create_field 20
+    let f0 = create_field 10
 
     let simulation() =
       let rec simulation m =
