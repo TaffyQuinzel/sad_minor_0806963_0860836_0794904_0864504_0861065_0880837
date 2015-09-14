@@ -50,8 +50,10 @@
     <None Include="App.config" />
     <Compile Include="Global.fs" />
     <Compile Include="ChapterOne.fs" />
-    <Compile Include="ChapterThree.fs" />
     <Compile Include="ChapterTwo.fs" />
+    <Compile Include="ChapterThree.fs" />
+    <Compile Include="ChapterFour.fs" />
+    <Compile Include="ChapterFive.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <PropertyGroup>
