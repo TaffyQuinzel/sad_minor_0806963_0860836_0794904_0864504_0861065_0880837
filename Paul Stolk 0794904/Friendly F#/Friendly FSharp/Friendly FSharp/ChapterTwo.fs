@@ -107,6 +107,7 @@
             Stage3 = Some(stage3)
           }
       }
+
     let simulation_step (m: ApolloMission) =
       let r = m.Rocket
       let F_body (b: CelestialBody) =
@@ -133,6 +134,18 @@
         let F_earth = (F_body m.Earth)
         let F_moon = (F_body m.Moon)
         F_earth + F_moon + F_engine
+      let Y = 
+        if(Console.KeyAvailable) then
+          let key = Console.ReadKey(true)
+          if(key.Key = ConsoleKey.UpArrow) then
+            m.Rocket.Body.Position.Y - 4.0e8<meters>
+          elif(key.Key = ConsoleKey.DownArrow) then
+             m.Rocket.Body.Position.Y + 4.0e8<meters>
+          else
+            r.Body.Position.Y
+        else
+         r.Body.Position.Y
+
       let r =
         let stage_mass =
           function
@@ -145,7 +158,7 @@
                 r.Body with
                   Position =
                     let p = r.Body.Position + r.Velocity * dt
-                    { p with X = max (p.X) earth_radius }
+                    { p with X = max (p.X) earth_radius; Y= Y }
                   Mass = 
                     r.BaseMass + stage_mass r.Stage1 + stage_mass r.Stage2 + stage_mass r.Stage3
               }
@@ -168,7 +181,7 @@
       let set_cursor_on_body b =
         Console.SetCursorPosition(
           ((b.Position.X / 4.0e8<meters>) * 78.0 + 1.0) |> int,
-          (b.Position.X / 4.0e8<meters> + 11.0) |> int)
+          (b.Position.Y / 4.0e8<meters> + 11.0) |> int)
       do set_cursor_on_body m.Earth.Body
       do Console.Write(m.Earth.Name)
       do set_cursor_on_body m.Moon.Body
@@ -183,4 +196,5 @@
         let m' = simulation_step m
         if Vector2<_>.Distance(m'.Moon.Body.Position, m'.Rocket.Body.Position) > 1.7e6<meters> then
           do simulation m'
+
       do simulation m0
