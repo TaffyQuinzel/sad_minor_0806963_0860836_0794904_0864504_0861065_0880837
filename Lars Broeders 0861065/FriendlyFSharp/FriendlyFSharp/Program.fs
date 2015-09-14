@@ -3,8 +3,8 @@
 
 [<EntryPoint>]
 let main argv = 
-  do Chapter1.BallSimulation.simulation()
-    // do Chapter2.RocketSimulation.simulation()
+//  do Chapter1.BallSimulation.simulation()
+  do Chapter2.RocketSimulation.simulation()
     // do Chapter3.SmallAsteroidFieldSimulation.simulation()
     // do Chapter4.LargeAsteroidFieldSimulation.slow_simulation()
     // do Chapter4.LargeAsteroidFieldSimulation.slow_simulation_framerate()

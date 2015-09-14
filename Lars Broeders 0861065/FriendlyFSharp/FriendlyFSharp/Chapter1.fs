@@ -3,7 +3,6 @@
     open System
     open System.Threading
     open Chapter2.Math
-//    open Chapter3.SmallAsteroidFieldSimulation
 
     let dt = 0.5<s>
 

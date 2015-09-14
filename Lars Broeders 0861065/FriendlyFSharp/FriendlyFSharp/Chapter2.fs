@@ -54,9 +54,6 @@
       static member Dot (v1: Vector2<'a>, v2: Vector2<'b>): float<'a * 'b> =
         v1.X * v2.X + v1.Y * v2.Y
 
-      
-      
-
   module RocketSimulation =
     open System
     open System.Threading
@@ -98,13 +95,14 @@
       {
         Earth:  CelestialBody
         Moon:   CelestialBody
+        DustBelt: float<m>
         Rocket: Rocket
       }
 
     let earth_radius = 6.37e6<m>
     let earth_mass = 5.97e24<kg>
     let moon_mass = 7.35e22<kg>
-    let dt = 60.0<s>
+    let dt = 30.0<s>
     let G = 6.67e-11<m^3*kg^-1*s^-2>
 
     let m0: ApolloMission =
@@ -127,6 +125,7 @@
               }
             Name = "M"
           }
+        DustBelt = 10.0e7<m>
         Rocket = 
           let stage1 = 
             {
@@ -188,9 +187,22 @@
         | _ -> Vector2<N>.Zero, r
       let F =
         let F_earth = (F_body m.Earth)
-        let F_moon = (F_body m.Moon)
-        F_earth + F_moon + F_engine
+        let F_moon = (F_body m.Moon)          
+        let f = F_earth + F_moon + F_engine
+        f
+        
       let r =
+        let y = 
+          let y' = r.Body.Position.Y
+          if (Console.KeyAvailable) then
+            let ukey = Console.ReadKey(true)
+            if ukey.Key = ConsoleKey.UpArrow then
+              y' - 4.0e8<m>
+            elif ukey.Key = ConsoleKey.DownArrow then
+              y' + 4.0e8<m>
+            else y'
+          else
+            y'
         let stage_mass =
           function
           | None -> 0.0<_>
@@ -202,7 +214,7 @@
                 r.Body with
                   Position =
                     let p = r.Body.Position + r.Velocity * dt
-                    { p with X = max (p.X) earth_radius }
+                    { p with X = max (p.X) earth_radius; Y = y }
                   Mass = 
                     r.BaseMass + stage_mass r.Stage1 + stage_mass r.Stage2 + stage_mass r.Stage3
               }
@@ -225,17 +237,19 @@
       let set_cursor_on_body b =
         Console.SetCursorPosition(
           ((b.Position.X / 4.0e8<m>) * 78.0 + 1.0) |> int,
-          (b.Position.X / 4.0e8<m> + 11.0) |> int)
+          (b.Position.Y / 4.0e8<m> + 11.0) |> int)
       do set_cursor_on_body m.Earth.Body
       do Console.Write(m.Earth.Name)
       do set_cursor_on_body m.Moon.Body
       do Console.Write(m.Moon.Name)
       do set_cursor_on_body m.Rocket.Body
       do Console.Write("R")
+      do Console.SetCursorPosition(0, 24)
+      do Console.Write(m.Rocket.Body.Position.Y |> int)
       do Thread.Sleep(100)
 
     let simulation() = 
-      let rec simulation m =
+      let rec simulation m =      
         do print_scene m
         let m' = simulation_step m
         if Vector2<_>.Distance(m'.Moon.Body.Position, m'.Rocket.Body.Position) > 1.7e6<m> then
