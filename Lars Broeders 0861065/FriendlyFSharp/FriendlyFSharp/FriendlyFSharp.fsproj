@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Trees.fs" />
     <Compile Include="Chapter2.fs" />
     <Compile Include="Chapter3.fs" />
     <Compile Include="Chapter1.fs" />

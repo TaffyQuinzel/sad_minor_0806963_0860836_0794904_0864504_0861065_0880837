@@ -5,26 +5,26 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>ef1cfdcd-51b6-4369-a130-fd5a8769b4f0</ProjectGuid>
+    <ProjectGuid>843562ab-4d38-4fe3-9b82-c0a3fe4b5d2e</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Friendly_FSharp</RootNamespace>
-    <AssemblyName>Friendly_FSharp</AssemblyName>
+    <RootNamespace>ConsoleApplication8</RootNamespace>
+    <AssemblyName>ConsoleApplication8</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
-    <Name>Friendly FSharp</Name>
+    <Name>ConsoleApplication8</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Debug\Friendly_FSharp.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\ConsoleApplication8.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,7 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Release\Friendly_FSharp.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\ConsoleApplication8.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -47,15 +47,10 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <Compile Include="Global.fs" />
-    <Compile Include="Tree.fs" />
-    <Compile Include="ChapterOne.fs" />
-    <Compile Include="ChapterTwo.fs" />
-    <Compile Include="ChapterThree.fs" />
-    <Compile Include="ChapterFour.fs" />
-    <Compile Include="ChapterFive.fs" />
+    <Compile Include="Chapter2.Math.fs" />
+    <Compile Include="Chapter2.fs" />
     <Compile Include="Program.fs" />
+    <None Include="App.config" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

@@ -117,6 +117,8 @@
         MaxIntegrity: float<Life>
         Damage: float<Life/s>
         WeaponsRange: float<m>
+        mutable CargoLoad: int
+        MaxCargoLoad: int
         mutable AI: Coroutine<Unit>
       }
 
@@ -132,6 +134,7 @@
         PoliceStation: Station
         Patrol: Ship
         Pirate: Ship
+        PirateThief: Ship
         Cargo: Ship
       }
 
@@ -162,6 +165,67 @@
           else
             do impulse self dir 1.0
             do! wait 1.0
+        return ()
+      }
+
+    let steal (self: Ship) (target: Ship) =
+      co{
+        do! yield_
+        let dir = Vector2<_>.Normalize(target.Position - self.Position)
+        let dist = (target.Position - self.Position).Length
+        if dist > field_size *1.0e-1 then
+          if self.Velocity.Length > 0.01<_> then
+            let v_norm = self.Velocity.Normalized
+            let dot = Vector2.Dot(dir, v_norm)
+            if dot <= 0.0 then
+              do impulse self (-self.Velocity.Normalized) 1.0
+            elif dot < 0.5 then
+              do impulse self (Vector2<_>.Normalize(-(self.Velocity.Normalized - dir * dot))) 0.3
+            else
+              do impulse self dir 0.1
+            do! wait 1.0
+          else
+            do impulse self dir 1.0
+            do! wait 1.0
+        else
+          let zero_velocity =
+            co{
+              do! yield_
+              return self.Velocity <- Vector2<_>.Zero
+            }
+          let load = self.MaxCargoLoad
+          do self.CargoLoad <- load
+          do target.CargoLoad <- target.CargoLoad - load
+          do! wait_doing (fun _ -> zero_velocity) (3.0 * (load |> float))
+        return ()
+      }
+
+    let unload (self: Ship) (target: Ship) =
+      co{
+        do! yield_
+        let dir = Vector2<_>.Normalize(target.Position - self.Position)
+        if Vector2<_>.Distance(target.Position, self.Position) <= field_size *1.0e-1 then
+          let zero_velocity =
+            co{
+              do! yield_
+              return self.Velocity <- Vector2<_>.Zero
+            }
+          let load = self.CargoLoad
+          do target.CargoLoad <- load
+          do self.CargoLoad <- 0
+          do! wait_doing (fun _ -> zero_velocity) (3.0 * (load |> float))
+        elif self.Velocity.Length > 0.01<_> then
+          let dot = Vector2<1>.Dot(self.Velocity.Normalized, dir)
+          if dot <= 0.0 then 
+            do impulse self (-self.Velocity.Normalized) 1.0
+          elif dot < 0.5 then
+            do impulse self (Vector2<_>.Normalize(-(self.Velocity.Normalized - dir * dot))) 0.3
+          else
+            do impulse self dir 0.2
+          do! wait 1.0
+        else
+          do impulse self dir 1.0
+          do! wait 1.0
         return ()
       }
 
@@ -229,6 +293,20 @@
         do! reach_station self s
       } |> repeat_
 
+    let thief_ai (s: PoliceChase) =
+      let self = s.PirateThief
+      let empty_cargo =
+        co{
+          do! yield_
+          return self.CargoLoad < self.MaxCargoLoad
+        }
+      let full_cargo =
+        co{
+          do! yield_
+          return (self.CargoLoad = self.MaxCargoLoad)
+        }
+      repeat_ ((empty_cargo => (steal (s.PirateThief) (s.Cargo))) .||> (full_cargo => (unload (s.PirateThief) (s.Pirate))))
+
     let s0() =
       let s =
         {
@@ -247,6 +325,8 @@
               MaxIntegrity = 100.0<_>
               Damage = 1.0e-1<_>/180.0
               WeaponsRange = field_size*0.1
+              CargoLoad = 0
+              MaxCargoLoad = 0
               AI = co{ return () }
             }
           Pirate =
@@ -263,6 +343,26 @@
               MaxIntegrity = 75.0<_>
               Damage = 2.0e-1<_>/180.0
               WeaponsRange = field_size*0.15
+              CargoLoad = 0
+              MaxCargoLoad = 10
+              AI = co{ return () }
+            }
+          PirateThief =
+            {
+              Position = { X = field_size; Y = field_size }*0.78
+              Velocity = Vector2<_>.Zero
+              DryMass = 0.5e4<_>
+              Fuel = 1.0e6<_>
+              MaxFuel = 1.0e6<_>
+              FuelBurn = 1.0e6<_>/(30.0*180.0)
+              Thrust = 9.0e5<_>/180.0
+              Force = Vector2<_>.Zero
+              Integrity = 30.0<_>
+              MaxIntegrity = 30.0<_>
+              Damage = 0.0<_>
+              WeaponsRange = 0.0<m>
+              CargoLoad = 0
+              MaxCargoLoad = 1
               AI = co{ return () }
             }
           Cargo =
@@ -279,12 +379,15 @@
               MaxIntegrity = 300.0<_>
               Damage = 1.0e-3<_>/180.0
               WeaponsRange = field_size*0.1
+              CargoLoad = 20
+              MaxCargoLoad = 20
               AI = co{ return () }
             }
         }
       do s.Patrol.AI <- patrol_ai s
       do s.Pirate.AI <- pirate_ai s
       do s.Cargo.AI  <- cargo_ai s
+      do s.PirateThief.AI <- thief_ai s
       s
 
     let co_step =
@@ -303,6 +406,7 @@
       do ship_step s.Patrol
       do ship_step s.Pirate
       do ship_step s.Cargo
+      do ship_step s.PirateThief
       if Vector2<_>.Distance(s.Patrol.Position, s.Pirate.Position) < s.Patrol.WeaponsRange then
         do s.Pirate.Integrity <- s.Pirate.Integrity - s.Patrol.Damage * dt
       if Vector2<_>.Distance(s.Cargo.Position, s.Pirate.Position) < s.Cargo.WeaponsRange then
@@ -326,11 +430,14 @@
       do set_cursor_on_ship (s.Patrol)
       let ship_fuel (s:Ship) = (9.0*s.Fuel/s.MaxFuel).ToString("#.")
       let ship_integrity (s:Ship) = (9.0*s.Integrity/s.MaxIntegrity).ToString("#.")
+      let ship_cargo (s:Ship) = (s.CargoLoad).ToString("#.")
       do Console.Write((ship_fuel s.Patrol) + "P" + (ship_integrity s.Patrol))
       do set_cursor_on_ship (s.Pirate)
       do Console.Write((ship_fuel s.Pirate) + "X" + (ship_integrity s.Pirate))
       do set_cursor_on_ship (s.Cargo)
-      do Console.Write((ship_fuel s.Cargo) + "C" + (ship_integrity s.Cargo))
+      do Console.Write((ship_cargo s.Cargo) + "C" + (ship_integrity s.Cargo))
+      do set_cursor_on_ship (s.PirateThief)
+      do Console.Write((ship_cargo s.PirateThief) + "T" + (ship_integrity s.PirateThief))
       do Console.SetCursorPosition(0, 0)
       do Thread.Sleep(10)
 

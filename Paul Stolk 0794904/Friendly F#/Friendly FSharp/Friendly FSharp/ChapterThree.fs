@@ -3,6 +3,7 @@
     open System
     open System.Threading
     open Global.Math
+    open Global.MathVector2
 
     type Asteroid =
       {
@@ -64,23 +65,31 @@
       G*a.Mass*a'.Mass*dir/(dist*dist*dist)
 
     let simulation_step (asteroids:Asteroid list) =
-      [
-        for a in asteroids do
-          let forces =
-            [
-              for a' in asteroids do
-                if a' <> a then
-                  yield force(a,a')
-            ]
-          let F = List.sum forces
-          let p',v' = clamp(a.Position,a.Velocity)
-          yield
-            {
-              a with
-                Position = p'+dt*v'
-                Velocity = v'+dt*F/a.Mass
-            }
-      ]
+      let list = 
+        [
+          for a in asteroids do
+            let forces =
+              [
+                for a' in asteroids do
+                  if a' <> a then
+                    yield force(a,a')
+              ]
+            let F = List.sum forces
+            let p',v' = clamp(a.Position,a.Velocity)
+            yield
+              {
+                a with
+                  Position = p'+dt*v'
+                  Velocity = v'+dt*F/a.Mass
+              }
+        ]
+      if (Console.KeyAvailable) then
+        let key = Console.ReadKey(true)
+        match key.Key with
+        | ConsoleKey.Spacebar -> list @ create_field 1
+        | _ -> list
+      else 
+        list
     
     let print_scene (asteroids:Asteroid list) =
       do Console.Clear()

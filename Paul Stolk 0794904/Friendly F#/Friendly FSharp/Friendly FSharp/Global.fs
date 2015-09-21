@@ -14,6 +14,7 @@
     [<Measure>]
     type Newton = kg * meters / seconds^2
 
+ module MathVector2 =
     type Vector2<[<Measure>] 'a> =
       {
         X: float<'a>
@@ -54,6 +55,49 @@
         v.Normalized
       static member Dot (v1: Vector2<'a>, v2: Vector2<'b>): float<'a * 'b> =
         v1.X * v2.X + v1.Y * v2.Y
+
+ module MathVector3 =
+    type Vector3<[<Measure>] 'a> =
+      {
+        X: float<'a>
+        Y: float<'a>
+        Z: float<'a>
+      }
+
+      static member Zero: Vector3<'a> =
+        { X = 0.0<_>; Y = 0.0<_>; Z = 0.0<_> }
+      static member (+) (v1: Vector3<'a>, v2: Vector3<'a>): Vector3<'a> =
+        { X = v1.X + v2.X; Y = v1.Y + v2.Y; Z = v1.Z + v2.Z }
+      static member (+) (v: Vector3<'a>, k: float<'a>): Vector3<'a> =
+        { X = v.X + k; Y = v.Y + k; Z = v.Z + k }
+      static member (+) (k:float<'a>, v: Vector3<'a>): Vector3<'a> =
+        v + k
+      static member (~-) (v: Vector3<'a>): Vector3<'a> =
+        { X = -v.X; Y = -v.Y; Z = -v.Z }
+      static member (-) (v1: Vector3<'a>, v2: Vector3<'a>): Vector3<'a> =
+        v1 + (-v2)
+      static member (-) (v: Vector3<'a>, k: float<'a>): Vector3<'a> =
+        v + (-k)
+      static member (-) (k: float<'a>, v: Vector3<'a>): Vector3<'a> =
+        k + (-v)
+      static member (*) (v1: Vector3<'a>, v2: Vector3<'b>): Vector3<'a * 'b> =
+        { X = v1.X * v2.X; Y = v1.Y * v2.Y; Z = v1.Z * v2.Z }
+      static member (*) (v: Vector3<'a> , f: float<'b>): Vector3<'a * 'b> =
+        { X = v.X * f; Y = v.Y * f; Z = v.Z * f }
+      static member (*) (f: float<'b>, v: Vector3<'a>): Vector3<'b * 'a> =
+        { X = f * v.X; Y = f * v.Y; Z = f * v.Z }
+      static member (/) (v: Vector3<'a>, f: float<'b>): Vector3<'a / 'b> =
+        v * (1.0 / f)
+      member this.Length: float<'a> =
+        sqrt((this.X * this.X + this.Y * this.Y + this.Z * this.Z))
+      member this.Normalized = 
+        this / this.Length
+      static member Distance (v1: Vector3<'a>, v2: Vector3<'a>): float<'a> =
+        (v1 - v2).Length
+      static member Normalize(v: Vector3<'a>): Vector3<1> =
+        v.Normalized
+      static member Dot (v1: Vector3<'a>, v2: Vector3<'b>): float<'a * 'b> =
+        v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z
 
  module Coroutines =
     open Microsoft.FSharp

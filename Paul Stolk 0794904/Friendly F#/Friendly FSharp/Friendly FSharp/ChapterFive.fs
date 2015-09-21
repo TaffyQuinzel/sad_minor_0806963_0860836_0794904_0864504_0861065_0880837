@@ -4,6 +4,7 @@
     open System
     open System.Threading
     open Global.Math
+    open Global.MathVector2
     open Global.Coroutines
 
     [<Measure>]
