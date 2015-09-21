@@ -36,10 +36,15 @@
     type PoliceChase =
       {
         PoliceStation : Station
-        Patrol : Ship
+        HeadPatrol : Ship
+        subPatrol1 : Ship
+        subPatrol2 : Ship
+        HeadPirate : Ship
         Pirate : Ship
         Cargo : Ship
       }
+      member PoliceChase.PoliceShips = seq {yield PoliceChase.HeadPatrol; yield PoliceChase.subPatrol1; yield PoliceChase.subPatrol2;}
+      member PoliceChase.PirateShips = seq {yield PoliceChase.HeadPirate; yield PoliceChase.Pirate; }
 
     let dt = 180.0<seconds>
     let field_size = 3.8e7<meters>
@@ -102,8 +107,9 @@
         return ()
       }
     
-    let patrol_ai (s:PoliceChase) =
-      let self = s.Patrol
+    let patrol_ai (self:Ship) (s:PoliceChase) =
+      let closestPirate() : Ship =
+        s.PirateShips |> Seq.minBy (fun ship ->  Vector2<_>.Distance(self.Position, ship.Position))     
       let healthy_and_fueled =
         co{
           do! yield_
@@ -116,22 +122,23 @@
           return not h
         }
       repeat_
-        ((healthy_and_fueled => attack self (s.Pirate)) .||>
+        ((healthy_and_fueled => attack self (closestPirate())) .||>
           (need_docking => reach_station self s))
 
-    let pirate_ai (s: PoliceChase) =
-      let self = s.Pirate
+    let pirate_ai (self:Ship) (s: PoliceChase) =
+      let closestShip() : Ship =
+        s.PoliceShips |> Seq.minBy (fun ship ->  Vector2<_>.Distance(self.Position, ship.Position))     
       let patrol_near =
         co{
           do! yield_
-          return Vector2<_>.Distance(self.Position, s.Patrol.Position) < s.Patrol.WeaponsRange
+          return Vector2<_>.Distance(self.Position, closestShip().Position) < s.subPatrol1.WeaponsRange
         }
       let patrol_far =
         co{
           let! n = patrol_near
           return not n
         }
-      repeat_ ((patrol_near => (attack (s.Pirate) (s.Patrol))) .||> (patrol_far => (attack (s.Pirate) (s.Cargo))))
+      repeat_ ((patrol_near => (attack (s.Pirate) (closestShip()))) .||> (patrol_far => (attack (s.Pirate) (s.Cargo))))
     
     let cargo_ai (s: PoliceChase) =
       let self = s.Cargo
@@ -147,9 +154,9 @@
             { 
               Position = { X = field_size; Y = field_size }*0.25 
             }
-          Patrol =
+          HeadPatrol =
             {
-              Position = { X = field_size; Y = field_size }*0.25
+              Position = { X = field_size; Y = field_size }*0.78
               Velocity = Vector2<_>.Zero
               DryMass = 4.5e4<_>
               Fuel = 2.2e6<_>
@@ -157,15 +164,47 @@
               FuelBurn = 2.2e6<_>/(50.0*180.0)
               Thrust = 5.0e6<_>/180.0
               Force = Vector2<_>.Zero
-              Integrity = 100.0<_>
-              MaxIntegrity = 100.0<_>
+              Integrity = 200.0<_>
+              MaxIntegrity = 200.0<_>
+              Damage = 2.0e-1<_>/180.0
+              WeaponsRange = field_size*0.1
+              AI = co{ return () }
+            }
+          subPatrol1 =
+            {
+              Position = { X = field_size; Y = field_size }*0.35
+              Velocity = Vector2<_>.Zero
+              DryMass = 4.5e4<_>
+              Fuel = 2.2e6<_>
+              MaxFuel = 2.2e6<_>
+              FuelBurn = 2.2e6<_>/(50.0*180.0)
+              Thrust = 5.0e6<_>/180.0
+              Force = Vector2<_>.Zero
+              Integrity = 50.0<_>
+              MaxIntegrity = 50.0<_>
               Damage = 1.0e-1<_>/180.0
               WeaponsRange = field_size*0.1
               AI = co{ return () }
             }
-          Pirate =
+          subPatrol2 =
             {
-              Position ={ X = field_size; Y = field_size }*0.75
+              Position = { X = field_size; Y = field_size }*0.45
+              Velocity = Vector2<_>.Zero
+              DryMass = 4.5e4<_>
+              Fuel = 2.2e6<_>
+              MaxFuel = 2.2e6<_>
+              FuelBurn = 2.2e6<_>/(50.0*180.0)
+              Thrust = 5.0e6<_>/180.0
+              Force = Vector2<_>.Zero
+              Integrity = 50.0<_>
+              MaxIntegrity = 50.0<_>
+              Damage = 1.0e-1<_>/180.0
+              WeaponsRange = field_size*0.1
+              AI = co{ return () }
+            }
+          HeadPirate =
+            {
+              Position ={ X = field_size; Y = field_size }*0.66
               Velocity = Vector2<_>.Zero
               DryMass = 3.0e4<_>
               Fuel = 2.2e6<_>
@@ -173,8 +212,24 @@
               FuelBurn = 2.2e6<_>/(30.0*180.0)
               Thrust = 5.0e5<_>/180.0
               Force = Vector2<_>.Zero
-              Integrity = 75.0<_>
-              MaxIntegrity = 75.0<_>
+              Integrity = 475.0<_>
+              MaxIntegrity = 475.0<_>
+              Damage = 3.0e-1<_>/180.0
+              WeaponsRange = field_size*0.15
+              AI = co{ return () }
+            }
+          Pirate =
+            {
+              Position ={ X = field_size; Y = field_size }*0.68
+              Velocity = Vector2<_>.Zero
+              DryMass = 3.0e4<_>
+              Fuel = 2.2e6<_>
+              MaxFuel = 2.2e6<_>
+              FuelBurn = 2.2e6<_>/(30.0*180.0)
+              Thrust = 5.0e5<_>/180.0
+              Force = Vector2<_>.Zero
+              Integrity = 275.0<_>
+              MaxIntegrity = 275.0<_>
               Damage = 2.0e-1<_>/180.0
               WeaponsRange = field_size*0.15
               AI = co{ return () }
@@ -189,15 +244,18 @@
               FuelBurn = 3.5e6<_>/180.0
               Thrust = 3.4e6<_>/180.0
               Force = Vector2<_>.Zero
-              Integrity = 300.0<_>
-              MaxIntegrity = 300.0<_>
+              Integrity = 600.0<_>
+              MaxIntegrity = 600.0<_>
               Damage = 1.0e-3<_>/180.0
               WeaponsRange = field_size*0.1
               AI = co{ return () }
             }
         }
-      do s.Patrol.AI <- patrol_ai s
-      do s.Pirate.AI <- pirate_ai s
+      do s.subPatrol1.AI <- patrol_ai s.subPatrol1 s
+      do s.subPatrol2.AI <- patrol_ai s.subPatrol2 s
+      do s.HeadPatrol.AI <- patrol_ai s.HeadPatrol s
+      do s.Pirate.AI <- pirate_ai s.Pirate s
+      do s.HeadPirate.AI <- pirate_ai s.HeadPirate s
       do s.Cargo.AI <- cargo_ai s
       s
     let co_step =
@@ -211,17 +269,42 @@
       do s.Force <- Vector2<_>.Zero
       do s.AI <- co_step (s.AI())
     let simulation_step (s:PoliceChase) =
-      do ship_step s.Patrol
+      do ship_step s.subPatrol1
+      do ship_step s.subPatrol2
+      do ship_step s.HeadPatrol
+      do ship_step s.HeadPirate
       do ship_step s.Pirate
       do ship_step s.Cargo
-      if Vector2<_>.Distance(s.Patrol.Position, s.Pirate.Position) < s.Patrol.WeaponsRange then
-          do s.Pirate.Integrity <- s.Pirate.Integrity - s.Patrol.Damage*dt
+      if Vector2<_>.Distance(s.HeadPatrol.Position, s.Pirate.Position) < s.HeadPatrol.WeaponsRange then
+          do s.Pirate.Integrity <- s.Pirate.Integrity - s.HeadPatrol.Damage*dt
+      elif Vector2<_>.Distance(s.HeadPatrol.Position, s.HeadPirate.Position) < s.HeadPatrol.WeaponsRange then
+          do s.HeadPirate.Integrity <- s.HeadPirate.Integrity - s.HeadPatrol.Damage*dt
+      if Vector2<_>.Distance(s.subPatrol1.Position, s.Pirate.Position) < s.subPatrol1.WeaponsRange then
+          do s.Pirate.Integrity <- s.Pirate.Integrity - s.subPatrol1.Damage*dt
+      elif Vector2<_>.Distance(s.subPatrol1.Position, s.HeadPirate.Position) < s.subPatrol1.WeaponsRange then
+          do s.HeadPirate.Integrity <- s.HeadPirate.Integrity - s.subPatrol1.Damage*dt
+      if Vector2<_>.Distance(s.subPatrol2.Position, s.Pirate.Position) < s.subPatrol2.WeaponsRange then
+          do s.Pirate.Integrity <- s.Pirate.Integrity - s.subPatrol2.Damage*dt
+      elif Vector2<_>.Distance(s.subPatrol2.Position, s.HeadPirate.Position) < s.subPatrol2.WeaponsRange then
+          do s.HeadPirate.Integrity <- s.HeadPirate.Integrity - s.subPatrol2.Damage*dt
       if Vector2<_>.Distance(s.Cargo.Position,s.Pirate.Position) < s.Cargo.WeaponsRange then
           do s.Pirate.Integrity <- s.Pirate.Integrity - s.Cargo.Damage*dt
-      if Vector2<_>.Distance(s.Patrol.Position, s.Pirate.Position) < s.Pirate.WeaponsRange then
-          do s.Patrol.Integrity <- s.Patrol.Integrity - s.Pirate.Damage*dt
+      if Vector2<_>.Distance(s.HeadPatrol.Position, s.Pirate.Position) < s.Pirate.WeaponsRange then
+          do s.HeadPatrol.Integrity <- s.HeadPatrol.Integrity - s.Pirate.Damage*dt
+      elif Vector2<_>.Distance(s.subPatrol1.Position, s.Pirate.Position) < s.Pirate.WeaponsRange then
+          do s.HeadPatrol.Integrity <- s.subPatrol1.Integrity - s.Pirate.Damage*dt
+      elif Vector2<_>.Distance(s.subPatrol2.Position, s.Pirate.Position) < s.Pirate.WeaponsRange then
+          do s.HeadPatrol.Integrity <- s.subPatrol2.Integrity - s.Pirate.Damage*dt
       elif Vector2<_>.Distance(s.Cargo.Position, s.Pirate.Position) < s.Pirate.WeaponsRange then
           do s.Cargo.Integrity <- s.Cargo.Integrity - s.Pirate.Damage*dt
+      if Vector2<_>.Distance(s.HeadPatrol.Position, s.HeadPirate.Position) < s.HeadPirate.WeaponsRange then
+          do s.HeadPatrol.Integrity <- s.HeadPatrol.Integrity - s.HeadPirate.Damage*dt
+      elif Vector2<_>.Distance(s.subPatrol1.Position, s.HeadPirate.Position) < s.HeadPirate.WeaponsRange then
+          do s.HeadPatrol.Integrity <- s.subPatrol1.Integrity - s.HeadPirate.Damage*dt
+      elif Vector2<_>.Distance(s.subPatrol2.Position, s.HeadPirate.Position) < s.HeadPirate.WeaponsRange then
+          do s.HeadPatrol.Integrity <- s.subPatrol2.Integrity - s.HeadPirate.Damage*dt
+      elif Vector2<_>.Distance(s.Cargo.Position, s.HeadPirate.Position) < s.HeadPirate.WeaponsRange then
+          do s.Cargo.Integrity <- s.Cargo.Integrity - s.HeadPirate.Damage*dt
     
     let print(s:PoliceChase) =
       do Console.Clear()
@@ -234,15 +317,21 @@
       let set_cursor_on_ship (s:Ship) = set_cursor (s.Position)
       let set_cursor_on_station (s:Station) = set_cursor (s.Position)
       do set_cursor_on_station (s.PoliceStation)
-      do Console.Write("¤")
-      do set_cursor_on_ship (s.Patrol)
+      do Console.Write("Base")
       let ship_fuel (s:Ship) = (9.0*s.Fuel/s.MaxFuel).ToString("#.")
       let ship_integrity (s:Ship) = (9.0*s.Integrity/s.MaxIntegrity).ToString("#.")
-      do Console.Write((ship_fuel s.Patrol)+"Δ"+ (ship_integrity s.Patrol))
+      do set_cursor_on_ship (s.HeadPatrol)
+      do Console.Write((ship_fuel s.HeadPatrol)+":HPol:"+ (ship_integrity s.HeadPatrol))
+      do set_cursor_on_ship (s.subPatrol1)
+      do Console.Write((ship_fuel s.subPatrol1)+":Pol1:"+ (ship_integrity s.subPatrol1))
+      do set_cursor_on_ship (s.subPatrol2)
+      do Console.Write((ship_fuel s.subPatrol2)+":Pol2:"+ (ship_integrity s.subPatrol2))
+      do set_cursor_on_ship (s.HeadPirate)
+      do Console.Write((ship_fuel s.HeadPirate)+"HPir"+(ship_integrity s.HeadPirate))
       do set_cursor_on_ship (s.Pirate)
-      do Console.Write((ship_fuel s.Pirate)+"†"+(ship_integrity s.Pirate))
+      do Console.Write((ship_fuel s.Pirate)+"Pira"+(ship_integrity s.Pirate))
       do set_cursor_on_ship (s.Cargo)
-      do Console.Write((ship_fuel s.Cargo)+"•"+(ship_integrity s.Cargo))
+      do Console.Write((ship_fuel s.Cargo)+"Carg"+(ship_integrity s.Cargo))
       do Console.SetCursorPosition(0,0)
       do Thread.Sleep(10)
 
@@ -250,8 +339,11 @@
       let s = s0()
       let rec simulation() =
         do print s
-        if s.Patrol.Integrity > 0.0<_> &&
-          s.Pirate.Integrity > 0.0<_> &&
+        if (s.HeadPatrol.Integrity > 0.0<_> ||
+          s.subPatrol2.Integrity > 0.0<_> ||
+          s.subPatrol1.Integrity > 0.0<_> ) &&
+          (s.HeadPirate.Integrity > 0.0<_> ||
+          s.Pirate.Integrity > 0.0<_>) &&
           s.Cargo.Integrity > 0.0<_> then
         do simulation (simulation_step s)
       do simulation()
