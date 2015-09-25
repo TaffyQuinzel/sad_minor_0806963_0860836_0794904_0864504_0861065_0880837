@@ -55,6 +55,7 @@
     <Compile Include="ChapterThree.fs" />
     <Compile Include="ChapterFour.fs" />
     <Compile Include="ChapterFive.fs" />
+    <Compile Include="Monads.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <PropertyGroup>
