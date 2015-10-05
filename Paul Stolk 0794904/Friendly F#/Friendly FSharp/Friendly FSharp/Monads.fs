@@ -61,15 +61,29 @@
   // terug krijgen. die veroorzaakt is door het uitvoeren van de binnen gekregen fun
   let stateReturn (x:'a): State<'a,'s> = fun s -> x, s 
 
-  type stateBuilder() =
-   member this.Return = stateReturn
-
    // >>= : M<'a> -> State('a -> M<'b>) -> State<'a,'b>
   let stateBind (p : State<'a,'s>) (k: 'a-> State<'b, 's >) :State<'b, 's> =
     fun s-> 
       let (a,s0) = p s
       let (b,s1) = k a s0
       (b,s1)
-    
+
+  type stateBuilder() =
+    member this.Bind (p,k) = stateBind
+    member this.Return  x = stateReturn
+
+  type Error<'a> = Done of 'a | Error of string
+
+  type StateMaybe <'s,'a> = 's -> Error <'a * 's>
+
+  let returnDing x = fun s-> Done(x,s)
+
+  let BindDing (p:StateMaybe<'s, 'a>) (k: 'a-> StateMaybe<'s, 'b>) :  StateMaybe<'s, 'b> = 
+    fun s0-> 
+      match p s0 with
+      | Done (x,s1) -> 
+        k x s1
+      | Error e-> 
+        Error e
 
 

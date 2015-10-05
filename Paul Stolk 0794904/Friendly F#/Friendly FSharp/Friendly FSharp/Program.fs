@@ -12,6 +12,6 @@ let main argv =
  //   do ChapterFour.LargeAsteroidFieldSimulation.fast_simulation_framerate()
    // do ChapterFive.PoliceChase.simulation()
     printfn "%A" Monads.sum
-    do System.Threading.Thread.Sleep(1000)
+    do System.Threading.Thread.Sleep(9000)
     0 // return an integer exit code
 
