@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Language.StandardClassification;
 
 namespace McSyntax
 {
@@ -84,4 +85,5 @@ namespace McSyntax
             this.ForegroundColor = Colors.MediumAquamarine;
         }
     }
+
 }

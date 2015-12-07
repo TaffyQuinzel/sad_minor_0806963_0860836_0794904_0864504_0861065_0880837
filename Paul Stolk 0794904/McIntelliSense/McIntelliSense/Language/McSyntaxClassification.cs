@@ -7,14 +7,8 @@ namespace McSyntax
 
     internal static class FileAndContentTypeDefinitions
     {
-        
-
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("mc")]
         internal static ClassificationTypeDefinition mc = null;
-
-       
     }
-
-    
 }

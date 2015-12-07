@@ -36,6 +36,13 @@ namespace McSyntax
         [Name("Data")]
         internal static ClassificationTypeDefinition Data = null;
 
+        /// <summary> 
+        /// Defines the "ordinary" classification type. 
+        /// </summary> 
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("String")]
+        internal static ClassificationTypeDefinition String = null;
+
         #endregion
     }
 }

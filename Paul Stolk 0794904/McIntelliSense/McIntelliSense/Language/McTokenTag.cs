@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+using System.Text.RegularExpressions;
 
 namespace McSyntax
 {
@@ -44,6 +45,7 @@ namespace McSyntax
             _mcTypes["import"] = McTagEnum.Import;
             _mcTypes["typefunc"] = McTagEnum.TypeFunc;
             _mcTypes["data"] = McTagEnum.Data;
+            _mcTypes["string"] = McTagEnum.String;
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged
@@ -60,6 +62,13 @@ namespace McSyntax
                 ITextSnapshotLine containingLine = curSpan.Start.GetContainingLine();
                 int curLoc = containingLine.Start.Position;
                 string[] tokens = containingLine.GetText().ToLower().Split(' ');
+                foreach (Match match in Regex.Matches(containingLine.GetText(), "\"([^\"]*)\""))
+                {
+                    var tokenSpan = new SnapshotSpan(curSpan.Snapshot, new Span(curLoc, match.ToString().Length));
+                    if (tokenSpan.IntersectsWith(curSpan))
+                        yield return new TagSpan<McTokenTag>(tokenSpan,
+                                                              new McTokenTag(_mcTypes["string"]));
+                }
 
                 foreach (string mcToken in tokens)
                 {

@@ -17,13 +17,14 @@ namespace McSyntax
 
         [Export]
         [Name("mc")]
-        [BaseDefinition("code")]
+        [BaseDefinition("Intellisense")]
         internal static ContentTypeDefinition hidingContentTypeDefinition;
 
         [Export]
         [FileExtension(".mc")]
         [ContentType("mc")]
         internal static FileExtensionToContentTypeDefinition hiddenFileExtensionDefinition;
+
 
         [Import]
         internal IClassificationTypeRegistryService ClassificationTypeRegistry = null;
@@ -34,8 +35,7 @@ namespace McSyntax
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
 
-            ITagAggregator<McTokenTag> mcTagAggregator =
-                                            aggregatorFactory.CreateTagAggregator<McTokenTag>(buffer);
+            ITagAggregator<McTokenTag> mcTagAggregator = aggregatorFactory.CreateTagAggregator<McTokenTag>(buffer);
 
             return new McClassifier(buffer, mcTagAggregator, ClassificationTypeRegistry) as ITagger<T>;
         }
@@ -56,6 +56,7 @@ namespace McSyntax
             _mcTypes[McTagEnum.Import] = typeService.GetClassificationType("import");
             _mcTypes[McTagEnum.TypeFunc] = typeService.GetClassificationType("typefunc");
             _mcTypes[McTagEnum.Data] = typeService.GetClassificationType("data");
+            _mcTypes[McTagEnum.String] = typeService.GetClassificationType("string");
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged
