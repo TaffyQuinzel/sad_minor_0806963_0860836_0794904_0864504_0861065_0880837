@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Operations;
+using System.Linq;
+
 namespace McSyntax.Intellisence
 {
     internal class SyntaxCompletion : ICompletionSource
@@ -20,12 +22,14 @@ namespace McSyntax.Intellisence
         void ICompletionSource.AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
             List<string> strList = new List<string>();
+            var KeywordsuserDefined = McTokenTagger.ListWithKeywords().Distinct();
+            strList.AddRange(KeywordsuserDefined);
             strList.Add("Type");
             strList.Add("TypeData");
             strList.Add("Import");
             strList.Add("Data");
             m_compList = new List<Completion>();
-            foreach (string str in strList)
+            foreach (string str in strList.OrderBy(s => s))
                 m_compList.Add(new Completion(str, str, str, null, null));
 
             completionSets.Add(new CompletionSet(

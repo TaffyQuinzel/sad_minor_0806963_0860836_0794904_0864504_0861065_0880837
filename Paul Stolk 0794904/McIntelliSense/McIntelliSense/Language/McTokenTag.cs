@@ -36,7 +36,8 @@ namespace McSyntax
     {
         ITextBuffer _buffer;
         IDictionary<string, McTagEnum> _mcTypes;
-
+        
+        static List<string> ListOfKeywords = new List<string>();
         internal McTokenTagger(ITextBuffer buffer)
         {
             _buffer = buffer;
@@ -46,6 +47,7 @@ namespace McSyntax
             _mcTypes["typefunc"] = McTagEnum.TypeFunc;
             _mcTypes["data"] = McTagEnum.Data;
             _mcTypes["string"] = McTagEnum.String;
+            _mcTypes["comment"] = McTagEnum.Comment;
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged
@@ -54,35 +56,69 @@ namespace McSyntax
             remove { }
         }
 
+
+        public static List<string> ListWithKeywords () {
+            return ListOfKeywords;
+        }
+
         public IEnumerable<ITagSpan<McTokenTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-
+            bool commentIsActive = false;
             foreach (SnapshotSpan curSpan in spans)
             {
                 ITextSnapshotLine containingLine = curSpan.Start.GetContainingLine();
                 int curLoc = containingLine.Start.Position;
-                string[] tokens = containingLine.GetText().ToLower().Split(' ');
-                foreach (Match match in Regex.Matches(containingLine.GetText(), "\"([^\"]*)\""))
+
+                foreach (Match match in Regex.Matches(containingLine.GetText(), "\".*?\""))
                 {
-                    var tokenSpan = new SnapshotSpan(curSpan.Snapshot, new Span(curLoc, match.ToString().Length));
+                    curLoc = curLoc + match.Index;
+                    var tokenSpan = new SnapshotSpan(curSpan.Snapshot, new Span(curLoc, match.Length));
+                    var data = match.Value.Trim('"');
+                    ListOfKeywords.Add(data);
                     if (tokenSpan.IntersectsWith(curSpan))
-                        yield return new TagSpan<McTokenTag>(tokenSpan,
-                                                              new McTokenTag(_mcTypes["string"]));
+                        yield return new TagSpan<McTokenTag>(tokenSpan, new McTokenTag(_mcTypes["string"]));
                 }
 
+                curLoc = containingLine.Start.Position;
+                string[] tokens = containingLine.GetText().ToLower().Split(' ');
                 foreach (string mcToken in tokens)
                 {
                     if (_mcTypes.ContainsKey(mcToken))
                     {
-                        var tokenSpan = new SnapshotSpan(curSpan.Snapshot, new Span(curLoc, mcToken.Length));
-                        if (tokenSpan.IntersectsWith(curSpan))
-                            yield return new TagSpan<McTokenTag>(tokenSpan,
-                                                                  new McTokenTag(_mcTypes[mcToken]));
+                        if (!mcToken.Equals("string") && !mcToken.Equals("comment"))
+                        {
+                            var tokenSpan = new SnapshotSpan(curSpan.Snapshot, new Span(curLoc, mcToken.Length));
+                            if (tokenSpan.IntersectsWith(curSpan))
+                                yield return new TagSpan<McTokenTag>(tokenSpan,
+                                                                      new McTokenTag(_mcTypes[mcToken]));
+                        }
                     }
 
                     //add an extra char location because of the space 
                     curLoc += mcToken.Length + 1;
                 }
+
+                curLoc = containingLine.Start.Position;
+                var line = containingLine.GetText().ToLower();
+                if(line.StartsWith("$$") || commentIsActive || line.StartsWith("$*") || line.StartsWith("*$") || line.EndsWith("*$"))
+                {
+                    if(line.EndsWith("*$"))
+                    {
+                        commentIsActive = false;
+                    }
+
+                    if(line.StartsWith("$*"))
+                    {
+                        commentIsActive = true;
+                    }
+
+                    var tokenSpan = new SnapshotSpan(curSpan.Snapshot, new Span(curLoc, line.Length));
+                    if (tokenSpan.IntersectsWith(curSpan))
+                        yield return new TagSpan<McTokenTag>(tokenSpan, new McTokenTag(_mcTypes["comment"]));
+                }
+                //comments toevoegen
+                //TODO Multiline comment lines between start and end token, not functional, see CommenIsActive bool
+
             }
 
         }

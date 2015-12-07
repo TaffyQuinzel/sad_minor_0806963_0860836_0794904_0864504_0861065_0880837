@@ -57,6 +57,7 @@ namespace McSyntax
             _mcTypes[McTagEnum.TypeFunc] = typeService.GetClassificationType("typefunc");
             _mcTypes[McTagEnum.Data] = typeService.GetClassificationType("data");
             _mcTypes[McTagEnum.String] = typeService.GetClassificationType("string");
+            _mcTypes[McTagEnum.Comment] = typeService.GetClassificationType("comment");
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged
