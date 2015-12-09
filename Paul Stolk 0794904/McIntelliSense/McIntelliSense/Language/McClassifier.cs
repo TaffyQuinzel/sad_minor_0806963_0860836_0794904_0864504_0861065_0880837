@@ -6,18 +6,20 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Shell;
 
 namespace McSyntax
 {
     [Export(typeof(ITaggerProvider))]
     [ContentType("mc")]
+    [BaseDefinition("text")]
     [TagType(typeof(ClassificationTag))]
     internal sealed class McClassifierProvider : ITaggerProvider
     {
 
         [Export]
         [Name("mc")]
-        [BaseDefinition("Intellisense")]
+        [BaseDefinition("code")]
         internal static ContentTypeDefinition hidingContentTypeDefinition;
 
         [Export]
@@ -41,6 +43,31 @@ namespace McSyntax
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
+    public class CustomRegistrationAttribute : RegistrationAttribute
+    {
+        public override void Register(RegistrationAttribute.RegistrationContext context)
+        {
+            Key packageKey = null;
+            try
+            {
+                packageKey = context.CreateKey(@"Packages\{" + context.ComponentType.GUID + @"}\Custom");
+                packageKey.SetValue("NewCustom", 1);
+            }
+            finally
+            {
+                if (packageKey != null)
+                    packageKey.Close();
+            }
+        }
+
+        public override void Unregister(RegistrationContext context)
+        {
+            context.RemoveKey(@"Packages\" + context.ComponentType.GUID + @"}\Custom");
+        }
+
+
+    }
     internal sealed class McClassifier : ITagger<ClassificationTag>
     {
         ITextBuffer _buffer;
@@ -58,6 +85,7 @@ namespace McSyntax
             _mcTypes[McTagEnum.Data] = typeService.GetClassificationType("data");
             _mcTypes[McTagEnum.String] = typeService.GetClassificationType("string");
             _mcTypes[McTagEnum.Comment] = typeService.GetClassificationType("comment");
+            _mcTypes[McTagEnum.Signature] = typeService.GetClassificationType("signature");
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged

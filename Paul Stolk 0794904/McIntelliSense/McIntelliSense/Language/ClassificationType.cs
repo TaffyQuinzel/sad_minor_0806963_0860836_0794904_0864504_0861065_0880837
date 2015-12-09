@@ -43,6 +43,13 @@ namespace McSyntax
         [Name("String")]
         internal static ClassificationTypeDefinition String = null;
 
+        /// <summary> 
+        /// Defines the "ordinary" classification type. 
+        /// </summary> 
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Signature")]
+        internal static ClassificationTypeDefinition Signature = null;
+
         #endregion
     }
 }

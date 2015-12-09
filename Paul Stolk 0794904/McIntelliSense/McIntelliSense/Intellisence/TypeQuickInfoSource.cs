@@ -26,7 +26,10 @@ namespace McSyntax
             //these are the method names and their descriptions
             m_dictionary = new Dictionary<string, string>();
             m_dictionary.Add("TypeFunc", "Data of TypeFunc");
-            m_dictionary.Add("Func", "Infor over import");
+            m_dictionary.Add("Func", "Infor over func");
+            m_dictionary.Add("Import", "Infor over import");
+            m_dictionary.Add("Data", "Infor over data");
+            m_dictionary.Add("Signature", "Infor over Signature");
         }
 
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan)

@@ -8,6 +8,6 @@ namespace McSyntax
 {
     public enum McTagEnum
     {
-        TypeFunc, Func,Import,Data,String, Comment
+        TypeFunc, Func,Import,Data,String, Comment, Signature
     }
 }

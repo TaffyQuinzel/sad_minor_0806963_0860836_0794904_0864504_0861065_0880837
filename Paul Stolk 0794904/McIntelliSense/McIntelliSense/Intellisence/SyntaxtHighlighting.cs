@@ -44,7 +44,7 @@ namespace McSyntax
         public tpfnc()
         {
             this.DisplayName = "typefunc"; //human readable version of the name 
-            this.ForegroundColor = Colors.MediumAquamarine;
+            this.ForegroundColor = Colors.SteelBlue;
         }
     }
 
@@ -82,7 +82,26 @@ namespace McSyntax
         public fnc()
         {
             this.DisplayName = "func"; //human readable version of the name 
-            this.ForegroundColor = Colors.MediumAquamarine;
+            this.ForegroundColor = Colors.SteelBlue;
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "signature")]
+    [Name("signature")]
+    //this should be visible to the end user 
+    [UserVisible(false)]
+    //set the priority to be after the default classifiers 
+    [Order(Before = Priority.High)]
+    internal sealed class sgntr : ClassificationFormatDefinition
+    {
+        /// <summary> 
+        /// Defines the visual format for the "ordinary" classification type 
+        /// </summary> 
+        public sgntr()
+        {
+            this.DisplayName = "signature"; //human readable version of the name 
+            this.ForegroundColor = Colors.Purple;
         }
     }
 

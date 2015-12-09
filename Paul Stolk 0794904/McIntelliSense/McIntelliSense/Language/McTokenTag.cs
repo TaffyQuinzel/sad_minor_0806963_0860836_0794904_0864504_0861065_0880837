@@ -48,6 +48,7 @@ namespace McSyntax
             _mcTypes["data"] = McTagEnum.Data;
             _mcTypes["string"] = McTagEnum.String;
             _mcTypes["comment"] = McTagEnum.Comment;
+            _mcTypes["signature"] = McTagEnum.Signature;
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged

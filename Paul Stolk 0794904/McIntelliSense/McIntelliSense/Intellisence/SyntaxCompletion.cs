@@ -24,10 +24,11 @@ namespace McSyntax.Intellisence
             List<string> strList = new List<string>();
             var KeywordsuserDefined = McTokenTagger.ListWithKeywords().Distinct();
             strList.AddRange(KeywordsuserDefined);
-            strList.Add("Type");
-            strList.Add("TypeData");
+            strList.Add("Func");
+            strList.Add("TypeFunc");
             strList.Add("Import");
             strList.Add("Data");
+            strList.Add("Signature");
             m_compList = new List<Completion>();
             foreach (string str in strList.OrderBy(s => s))
                 m_compList.Add(new Completion(str, str, str, null, null));
