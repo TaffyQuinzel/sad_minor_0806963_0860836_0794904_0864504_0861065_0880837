@@ -1,1 +1,6 @@
-0.0.02 pre-Alpha version
+0.0.03 pre-Alpha version
+
+- Bug fix autocompletion
+In this release the auto completion should work
+
+Next release import statement reads file for auto completion
