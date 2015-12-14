@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Shell;
 
 namespace McSyntax
 {
+    //Set the contentType to MC. This makes sure that the content type MC is now useable in the rest of the solution. The base for MC is Text. Code is a layer on the text object.
     [Export(typeof(ITaggerProvider))]
     [ContentType("mc")]
     [BaseDefinition("text")]
@@ -96,7 +96,6 @@ namespace McSyntax
 
         public IEnumerable<ITagSpan<ClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-
             foreach (var tagSpan in this._aggregator.GetTags(spans))
             {
                 var tagSpans = tagSpan.Span.GetSpans(spans[0].Snapshot);

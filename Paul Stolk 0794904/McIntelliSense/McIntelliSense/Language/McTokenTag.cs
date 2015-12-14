@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using System.Text.RegularExpressions;
@@ -15,7 +13,6 @@ namespace McSyntax
     [TagType(typeof(McTokenTag))]
     internal sealed class OokTokenTagProvider : ITaggerProvider
     {
-
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             return new McTokenTagger(buffer) as ITagger<T>;
@@ -64,6 +61,12 @@ namespace McSyntax
 
         public IEnumerable<ITagSpan<McTokenTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
+            /*
+                this module regualtes the tagging. With this module, also the syntax highlighing is partially done. For simple tags it works fine
+                But for multiline comments it doesn't work as intended. The NormalizedSnapshotSpanCollection gets the view of the window. This means that 
+                What you get is only the part of the edditor that is shown to the end user. That is why multi line comments is nog working and the List of Keywords 
+                needs to be moved to another layer that scans the text. Since, this adds while you are typeing and with that feature you get a curropted list of suggestions.
+            */
             bool commentIsActive = false;
             foreach (SnapshotSpan curSpan in spans)
             {

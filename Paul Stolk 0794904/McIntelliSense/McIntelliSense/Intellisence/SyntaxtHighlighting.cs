@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text.Classification;
-using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.Language.StandardClassification;
 
 namespace McSyntax
 {
@@ -19,12 +14,9 @@ namespace McSyntax
     [Order(Before = Priority.High)]
     internal sealed class dt : ClassificationFormatDefinition
     {
-        /// <summary> 
-        /// Defines the visual format for the "ordinary" classification type 
-        /// </summary> 
         public dt()
         {
-            this.DisplayName = "data"; //human readable version of the name 
+            this.DisplayName = "data"; 
             this.ForegroundColor = Colors.Orange;
         }
     }
@@ -38,12 +30,9 @@ namespace McSyntax
     [Order(Before = Priority.High)]
     internal sealed class tpfnc : ClassificationFormatDefinition
     {
-        /// <summary> 
-        /// Defines the visual format for the "ordinary" classification type 
-        /// </summary> 
         public tpfnc()
         {
-            this.DisplayName = "typefunc"; //human readable version of the name 
+            this.DisplayName = "typefunc"; 
             this.ForegroundColor = Colors.SteelBlue;
         }
     }
@@ -57,12 +46,9 @@ namespace McSyntax
     [Order(Before = Priority.High)]
     internal sealed class mprt : ClassificationFormatDefinition
     {
-        /// <summary> 
-        /// Defines the visual format for the "ordinary" classification type 
-        /// </summary> 
         public mprt()
         {
-            this.DisplayName = "import"; //human readable version of the name 
+            this.DisplayName = "import"; 
             this.ForegroundColor = Colors.Blue;
         }
     }
@@ -76,12 +62,9 @@ namespace McSyntax
     [Order(Before = Priority.High)]
     internal sealed class fnc : ClassificationFormatDefinition
     {
-        /// <summary> 
-        /// Defines the visual format for the "ordinary" classification type 
-        /// </summary> 
         public fnc()
         {
-            this.DisplayName = "func"; //human readable version of the name 
+            this.DisplayName = "func"; 
             this.ForegroundColor = Colors.SteelBlue;
         }
     }
@@ -95,12 +78,9 @@ namespace McSyntax
     [Order(Before = Priority.High)]
     internal sealed class sgntr : ClassificationFormatDefinition
     {
-        /// <summary> 
-        /// Defines the visual format for the "ordinary" classification type 
-        /// </summary> 
         public sgntr()
         {
-            this.DisplayName = "signature"; //human readable version of the name 
+            this.DisplayName = "signature"; 
             this.ForegroundColor = Colors.Purple;
         }
     }

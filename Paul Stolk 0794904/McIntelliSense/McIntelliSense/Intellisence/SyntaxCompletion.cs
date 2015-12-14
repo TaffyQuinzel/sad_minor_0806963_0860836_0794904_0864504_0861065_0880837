@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Operations;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace McSyntax.Intellisence
 {
@@ -22,12 +23,23 @@ namespace McSyntax.Intellisence
         void ICompletionSource.AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
             List<string> strList = new List<string>();
-            var KeywordsuserDefined = McTokenTagger.ListWithKeywords().Distinct();
-            strList.AddRange(KeywordsuserDefined);
             strList.Add("Func");
             strList.Add("TypeFunc");
             strList.Add("Import");
             strList.Add("Data");
+            var visualsnapshot = session.TextView.VisualSnapshot;
+            var KeywordsuserDefined = new List<string>();
+            foreach (var line in visualsnapshot.Lines)
+            {
+                foreach (Match match in Regex.Matches(line.Extent.GetText(), "\".*?\""))
+                {
+                    var data = match.Value.Trim('"');
+                    KeywordsuserDefined.Add(data);
+                }
+            }
+
+            KeywordsuserDefined = KeywordsuserDefined.Distinct().ToList();
+            strList.AddRange(KeywordsuserDefined);
             strList.Add("Signature");
             m_compList = new List<Completion>();
             foreach (string str in strList.OrderBy(s => s))
