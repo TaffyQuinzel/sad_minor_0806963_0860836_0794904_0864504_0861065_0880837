@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="MetaCompiler .40ffc857-4cab-4cd4-9c1e-5776bc6f917a" Version="0.0.02" Language="en-US" Publisher="Paul Stolk" />
+    <Identity Id="MetaCompiler .40ffc857-4cab-4cd4-9c1e-5776bc6f917a" Version="0.0.03" Language="en-US" Publisher="Paul Stolk" />
     <DisplayName>MetaCompiler Intellisense</DisplayName>
     <Description xml:space="preserve">Adds intellisense for .mc files</Description>
     <MoreInfo>http://www.paulstolk.nl</MoreInfo>

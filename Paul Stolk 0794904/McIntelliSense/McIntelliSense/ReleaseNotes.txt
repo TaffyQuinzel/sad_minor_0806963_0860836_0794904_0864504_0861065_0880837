@@ -1,6 +1,4 @@
-0.0.03 pre-Alpha version
+0.0.04 pre-Alpha version
 
-- Bug fix autocompletion
-In this release the auto completion should work
-
-Next release import statement reads file for auto completion
+- New Fearure: Import files get implemented
+To make full use of this feature make sure you set your SYSTEM VARIABLE "MC_HOME" to your "standardLibrary" folder

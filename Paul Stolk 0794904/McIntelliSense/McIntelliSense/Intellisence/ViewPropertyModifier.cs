@@ -29,23 +29,23 @@ namespace McSyntax
 
             formatMap.BeginBatchUpdate();
 
-            regularCaretProperties[EditorFormatDefinition.ForegroundBrushId] = Brushes.Magenta;
-            formatMap.SetProperties("Caret", regularCaretProperties);
+            //regularCaretProperties[EditorFormatDefinition.ForegroundBrushId] = Brushes.Magenta;
+            //formatMap.SetProperties("Caret", regularCaretProperties);
 
-            overwriteCaretProperties[EditorFormatDefinition.ForegroundBrushId] = Brushes.Turquoise;
-            formatMap.SetProperties("Overwrite Caret", overwriteCaretProperties);
+            //overwriteCaretProperties[EditorFormatDefinition.ForegroundBrushId] = Brushes.Turquoise;
+            //formatMap.SetProperties("Overwrite Caret", overwriteCaretProperties);
 
-            indicatorMargin[EditorFormatDefinition.BackgroundColorId] = Colors.LightGreen;
-            formatMap.SetProperties("Indicator Margin", indicatorMargin);
+            //indicatorMargin[EditorFormatDefinition.BackgroundColorId] = Colors.LightGreen;
+            //formatMap.SetProperties("Indicator Margin", indicatorMargin);
 
-            visibleWhitespace[EditorFormatDefinition.ForegroundColorId] = Colors.Red;
-            formatMap.SetProperties("Visible Whitespace", visibleWhitespace);
+            //visibleWhitespace[EditorFormatDefinition.ForegroundColorId] = Colors.Red;
+            //formatMap.SetProperties("Visible Whitespace", visibleWhitespace);
 
-            selectedText[EditorFormatDefinition.BackgroundBrushId] = Brushes.LightPink;
-            formatMap.SetProperties("Selected Text", selectedText);
+            //selectedText[EditorFormatDefinition.BackgroundBrushId] = Brushes.LightPink;
+            //formatMap.SetProperties("Selected Text", selectedText);
 
-            inactiveSelectedText[EditorFormatDefinition.BackgroundBrushId] = Brushes.DeepPink;
-            formatMap.SetProperties("Inactive Selected Text", inactiveSelectedText);
+            //inactiveSelectedText[EditorFormatDefinition.BackgroundBrushId] = Brushes.DeepPink;
+            //formatMap.SetProperties("Inactive Selected Text", inactiveSelectedText);
 
             formatMap.EndBatchUpdate();
         }

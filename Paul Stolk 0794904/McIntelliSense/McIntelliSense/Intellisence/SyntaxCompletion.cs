@@ -5,6 +5,10 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Operations;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
+using System.Reflection;
+using Microsoft.Internal.VisualStudio.PlatformUI;
+using System.IO;
 
 namespace McSyntax.Intellisence
 {
@@ -28,10 +32,29 @@ namespace McSyntax.Intellisence
             strList.Add("Import");
             strList.Add("Data");
             var visualsnapshot = session.TextView.VisualSnapshot;
+
             var KeywordsuserDefined = new List<string>();
             foreach (var line in visualsnapshot.Lines)
             {
-                foreach (Match match in Regex.Matches(line.Extent.GetText(), "\".*?\""))
+                var textLine = line.Extent.GetText();
+                if (textLine.StartsWith("import "))
+                {
+                    //do something
+                    var openDocument = m_textBuffer.Properties.GetProperty(typeof(ITextDocument));
+                    if (openDocument != null)
+                    {
+                        //var file = (ITextDocument)openDocument;
+                        //var directory = Path.GetDirectoryName(file.FilePath);
+                        //var filename = Path.GetFileName(file.FilePath);
+                        //if current file in folder 'standard' 
+                        //eerst check if file in same folder as current file
+                        //als   
+                       // var paddefault = Environment.GetEnvironmentVariable("MC_HOME");
+                    }
+
+                }
+
+                foreach (Match match in Regex.Matches(textLine, "\".*?\""))
                 {
                     var data = match.Value.Trim('"');
                     KeywordsuserDefined.Add(data);
